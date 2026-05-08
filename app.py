@@ -6,7 +6,6 @@ import pandas as pd
 from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
-import base64
 
 # ==============================================================================
 # 1. CONFIGURAÇÃO DE SEGURANÇA E IA (GROQ)
@@ -99,147 +98,94 @@ def ai_generate_football_quiz(categoria, posicao, tema, qtd):
     return res.get("questoes", [])
 
 # ==============================================================================
-# 4. SISTEMA VISUAL (SISTEMA DIVIDIDO)
-# ==============================================================================
-
-def get_video_base64(video_path):
-    try:
-        with open(video_path, "rb") as video_file:
-            encoded_string = base64.b64encode(video_file.read()).decode('utf-8')
-        return f"data:video/mp4;base64,{encoded_string}"
-    except Exception:
-        return "https://videos.pexels.com/video-files/16651367/pexels-video-16651367.mp4"
-
-VIDEO_B64 = get_video_base64("arena.mp4")
-
-# CSS que se aplica a TODAS as páginas (Botões, Sidebar, Fontes)
-global_css = """
-    <style>
-    [data-testid="stSidebar"] { 
-        background-color: #001A33 !important; 
-        border-right: 6px solid #FFD700; 
-    }
-    [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label, 
-    [data-testid="stSidebar"] .stText, [data-testid="stSidebar"] span, [data-testid="stSidebar"] p {
-        color: #FFFFFF !important; font-weight: bold !important;
-    }
-    [data-testid="stSidebar"] div[role="radiogroup"] label { color: #FFFFFF !important; }
-
-    .q-card { 
-        background-color: #0A0A0A !important; 
-        padding: 30px; border-radius: 25px; border: 3px solid #00D1FF; 
-        margin-bottom: 30px; color: #FFFFFF !important; 
-        box-shadow: 0 10px 30px rgba(0, 209, 255, 0.2); font-family: 'Arial', sans-serif; 
-    }
-
-    .stButton>button { 
-        background-color: #00D1FF !important; color: #000000 !important; 
-        font-weight: 900 !important; font-size: 18px !important;
-        border-radius: 50px !important; border: 2px solid #FFFFFF !important; 
-        padding: 10px 30px !important; transition: 0.3s; text-transform: uppercase;
-        box-shadow: 0 0 15px #00D1FF;
-    }
-    .stButton>button:hover { 
-        background-color: #FFFFFF !important; color: #00D1FF !important; 
-        transform: scale(1.05); box-shadow: 0 0 25px #FFFFFF;
-    }
-
-    h1, h2, h3 { color: #FFFFFF !important; font-weight: 900 !important; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-    .stTextInput>div>div>input, .stSelectbox>div>div>div { 
-        border-radius: 15px !important; border: 2px solid rgba(255, 255, 255, 0.5) !important;
-        background-color: rgba(0, 0, 0, 0.6) !important; color: #FFFFFF !important;
-    }
-    </style>
-"""
-
-# CSS específico para as páginas com VÍDEO (Transparência e Background)
-arena_css = """
-    <style>
-    .video-background {
-        position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%;
-        width: auto; height: auto; z-index: -1; object-fit: cover;
-    }
-    .stApp { background: transparent !important; }
-    .main .block-container {
-        background-color: rgba(0, 0, 0, 0.75) !important; 
-        backdrop-filter: blur(15px); border-radius: 30px;
-        padding: 35px; margin-top: 20px; margin-bottom: 20px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.2); color: #FFFFFF !important;
-    }
-    </style>
-"""
-
-# CSS para a zona de JOGO (Fundo Sólido para Foco Total)
-focus_css = """
-    <style>
-    .stApp { background-color: #050505 !important; }
-    .main .block-container {
-        background-color: #050505 !important; 
-        color: #FFFFFF !important;
-    }
-    </style>
-"""
-
-video_html = f"""
-    <video autoplay muted loop playsinline class="video-background">
-        <source src="{VIDEO_B64}" type="video/mp4">
-    </video>
-"""
-
-# ==============================================================================
-# 5. LÓGICA DO APP
+# 4. INTERFACE GAMIFICADA - TEMA CLARO (LIGHT MODE)
 # ==============================================================================
 
 init_db()
+
 st.set_page_config(page_title="Base Craque AI ⚽", layout="wide", page_icon="⚽")
 
-# Injeta sempre o CSS Global
-st.markdown(global_css, unsafe_allow_html=True)
+# CSS TOTALMENTE CLARO
+st.markdown("""
+    <style>
+    .stApp { 
+        background-color: #F9FFF5; 
+        color: #1B5E20; 
+    }
+    [data-testid="stSidebar"] { 
+        background-color: #FFFFFF !important; 
+        border-right: 6px solid #FFD700; 
+    }
+    [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label, [data-testid="stSidebar"] .stText {
+        color: #1B5E20 !important;
+    }
+    .q-card { 
+        background-color: #FFFFFF; 
+        padding: 25px; 
+        border-radius: 25px; 
+        border: 4px solid #FFD700; 
+        margin-bottom: 25px; 
+        color: #333; 
+        box-shadow: 8px 8px 0px #C8E6C9; 
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+    .stButton>button { 
+        background-color: #FFD700 !important; 
+        color: #1B5E20 !important; 
+        font-weight: 900 !important; 
+        font-size: 18px !important;
+        border-radius: 50px !important; 
+        border: 3px solid #1B5E20 !important; 
+        padding: 10px 20px !important;
+        transition: 0.2s; 
+        text-transform: uppercase;
+    }
+    .stButton>button:hover { 
+        background-color: #FFFFFF !important; 
+        transform: scale(1.05); 
+        box-shadow: 0 0 15px #FFD700;
+    }
+    h1, h2, h3 { 
+        color: #1B5E20 !important; 
+        font-family: 'Comic Sans MS', cursive, sans-serif !important; 
+        text-shadow: 1px 1px #FFD700;
+    }
+    .stTextInput>div>div>input, .stSelectbox>div>div>div { 
+        border-radius: 20px !important; 
+        border: 2px solid #C8E6C9 !important;
+        background-color: white !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 st.sidebar.title("⚽ Base Craque AI")
 st.sidebar.markdown("### MENU DO JOGO")
 menu = st.sidebar.radio("Escolha sua fase:", ["🏠 Vestiário", "🎮 Jogar Desafio", "🏆 Sala de Troféus"])
 
 if menu == "🏠 Vestiário":
-    # AQUI: Injeta Vídeo + CSS de Transparência
-    st.markdown(arena_css + video_html, unsafe_allow_html=True)
-    
-    st.markdown("<h1 style='text-align: center; font-size: 3.2em; color: #FFFFFF;'>🏟️ Bem-vindo ao Vestiário, Craque!</h1>", unsafe_allow_html=True)
-    
+    st.title("🏟️ Bem-vindo ao Vestiário, Craque!")
     col1, col2 = st.columns([2, 1])
     with col1:
         st.markdown("""
-        <div style="background-color: rgba(255,255,255,0.1); padding: 35px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.3); color: #FFFFFF; box-shadow: 0 10px 20px rgba(0,0,0,0.4);">
-            <h2 style="margin-top:0; color:#FFD700; border-bottom: 3px solid #FFD700; display: inline-block;">Bora subir de nível? 🚀⚽</h2>
-            <p style="font-size: 1.4em; line-height: 1.6; color: #FFFFFF;">Aqui você treina a <b style="color:#FFD700; font-size: 1.5em;">MENTE</b> para se tornar o melhor do campo! 
+        <div style="background-color: white; padding: 30px; border-radius: 30px; border: 4px solid #FFD700; box-shadow: 10px 10px 0px #C8E6C9;">
+            <h2 style="margin-top:0;">Bora subir de nível? 🚀⚽</h2>
+            <p style="font-size: 1.2em;">Aqui você treina a <b>mente</b> para se tornar o melhor do campo! 
             Aprenda as manhas da tática, as dicas de saúde e as regras para não levar cartão!</p>
             <br>
-            <div style="font-size: 1.2em; background-color: rgba(0,0,0,0.5); padding: 20px; border-radius: 20px; border: 1px solid #FFD700;">
-                🎯 <b style="color:#FFD700;">QI DE JOGO:</b> Teste sua visão de craque.<br>
-                🍎 <b style="color:#FFD700;">COMIDA de CAMPEÃO:</b> Nutrição para ter energia.<br>
-                📜 <b style="color:#FFD700;">REGRA DA BOLA:</b> Para dominar o juiz!<br>
-                🛡️ <b style="color:#FFD700;">MENTALIDADE:</b> Foco total no gol!
+            <div style="font-size: 1.1em;">
+                🎯 <b style="color:#1B5E20;">QI DE JOGO:</b> Teste sua visão de craque.<br>
+                🍎 <b style="color:#1B5E20;">COMIDA DE CAMPEÃO:</b> Nutrição para ter energia.<br>
+                📜 <b style="color:#1B5E20;">REGRA DA BOLA:</b> Para dominar o juiz!<br>
+                🛡️ <b style="color:#1B5E20;">MENTALIDADE:</b> Foco total no gol!
+            </div
             </div>
-        </div>
         """, unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown(f"""
-            <div style="background-color: rgba(57, 255, 20, 0.2); border-left: 8px solid #39FF14; padding: 15px; border-radius: 10px; color: #39FF14; font-weight: bold; box-shadow: 0 0 10px #39FF14;">
-                💡 Dica do Prof: 'Quem estuda o jogo, joga com a bola no pé!' ⚽
-            </div>
-        """, unsafe_allow_html=True)
-        
+        st.success("💡 **Dica do Prof:** 'Quem estuda o jogo, joga com a bola no pé!' ⚽")
     with col2:
-        try:
-            st.image("jogador.jpg.png", use_container_width=True)
-        except:
-            st.write("🚀 *Prepare-se para o jogo!*")
+        st.image("jogador.jpg.png", use_container_width=True)
 
 elif menu == "🎮 Jogar Desafio":
-    # AQUI: Injeta CSS de Fundo Sólido (SÉM VÍDEO)
-    st.markdown(focus_css, unsafe_allow_html=True)
-    
     st.title("🎮 Desafio de QI de Jogo")
     
     with st.container():
@@ -255,7 +201,7 @@ elif menu == "🎮 Jogar Desafio":
         with st.spinner("🏃 Professor preparando o campo..."):
             try:
                 questoes = ai_generate_football_quiz(categoria, posicao, tema, qtd_total)
-                if questoes and len(questoes) > 0:
+                if questoes and len(questoes) > 0: # Verifica se a IA realmente trouxe questões
                     id_desafio = save_desafio(categoria, posicao, tema)
                     save_questoes(id_desafio, questoes)
                     st.session_state.desafio_atual_id = id_desafio
@@ -276,9 +222,8 @@ elif menu == "🎮 Jogar Desafio":
             with st.form("quiz_form"):
                 for i, q in enumerate(questoes):
                     st.markdown(f"""<div class="q-card">
-                        <small style="color: #00D1FF;"><b>🌟 ÁREA: {q['area']}</b></small><br>
-                        <strong style="font-size:1.4em; color: #FFFFFF;">Questão {i+1}</strong><br>
-                        <span style="font-size:1.2em; color: #FFFFFF; display: block; margin-top: 10px;">{q['pergunta']}</span>
+                        <small style="color: #4CAF50;"><b>🌟 ÁREA: {q['area']}</b></small><br>
+                        <strong style="font-size:1.3em;">Questão {i+1}</strong><br>{q['pergunta']}
                     </div>""", unsafe_allow_html=True)
                     opcoes_formatadas = [f"{k}) {v}" for k, v in q['opcoes'].items()]
                     resp = st.radio(f"Qual a jogada certa?", options=opcoes_formatadas, key=f"q_{i}")
@@ -299,7 +244,12 @@ elif menu == "🎮 Jogar Desafio":
                     acertos += 1
                     stats[area]["corretas"] += 1
             
-            score_percent = (acertos / len(questoes)) * 100 if len(questoes) > 0 else 0
+            # --- CORREÇÃO DO ZERO DIVISION ERROR AQUI ---
+            if len(questoes) > 0:
+                score_percent = (acertos / len(questoes)) * 100
+            else:
+                score_percent = 0
+            # --------------------------------------------
 
             if score_percent >= 90: nivel = "🌟 LENDA DA VÁRZEA"
             elif score_percent >= 70: nivel = "🔥 PROMESSA DA BASE"
@@ -308,12 +258,12 @@ elif menu == "🎮 Jogar Desafio":
 
             col_a, col_b = st.columns(2)
             with col_a: st.metric("Aproveitamento", f"{score_percent:.1f}%")
-            with col_b: st.markdown(f"**Seu Nível:** <span style='font-size:20px; color:#FFD700; font-weight:bold;'>{nivel}</span>", unsafe_allow_html=True)
+            with col_b: st.markdown(f"**Seu Nível:** <span style='font-size:20px; color:#1B5E20;'>{nivel}</span>", unsafe_allow_html=True)
 
             if len(stats) > 0:
                 df_stats = pd.DataFrame([{"Área": k, "Perc": (v["corretas"]/v["total"])*100} for k, v in stats.items()])
-                fig = go.Figure(data=go.Bar(x=df_stats['Área'], y=df_stats['Perc'], marker_color='#00D1FF', text=df_stats['Perc'].apply(lambda x: f"{x:.0f}%"), textposition='auto'))
-                fig.update_layout(title="Tua Evolução no Campo!", yaxis_range=[0, 100], template="plotly_dark")
+                fig = go.Figure(data=go.Bar(x=df_stats['Área'], y=df_stats['Perc'], marker_color='#FFD700', text=df_stats['Perc'].apply(lambda x: f"{x:.0f}%"), textposition='auto'))
+                fig.update_layout(title="Tua Evolução no Campo!", yaxis_range=[0, 100], template="plotly_white")
                 st.plotly_chart(fig, use_container_width=True)
 
             st.divider()
@@ -321,12 +271,12 @@ elif menu == "🎮 Jogar Desafio":
             for i, q in enumerate(questoes):
                 user_ans = st.session_state.respostas_usuario.get(i, "N/A")
                 correct = q['correta']
-                color = "#39FF14" if user_ans == correct else "#FF3131"
+                color = "#2E7D32" if user_ans == correct else "#B22222"
                 st.markdown(f"""<div class="q-card" style="border-left: 10px solid {color}">
-                    <strong style="color:#FFFFFF;">{q['area']} | Pergunta {i+1}</strong><br>{q['pergunta']}<br><br>
+                    <strong style="color:#1B5E20;">{q['area']} | Pergunta {i+1}</strong><br>{q['pergunta']}<br><br>
                     Tua jogada: <span style="color:{color}; font-weight:bold;">{user_ans}</span> | 
-                    Jogada de Craque: <span style="color:#39FF14; font-weight:bold;">{correct}</span><br>
-                    <small><b style="color:#FFD700;">⚽ Dica do Prof:</b> {q['justificativa']}</small>
+                    Jogada de Craque: <span style="color:#2E7D32; font-weight:bold;">{correct}</span><br>
+                    <small><b style="color:#1B5E20;">⚽ Dica do Prof:</b> {q['justificativa']}</small>
                 </div>""", unsafe_allow_html=True)
             
             if st.button("Voltar para o Vestiário 🏠"):
@@ -335,19 +285,10 @@ elif menu == "🎮 Jogar Desafio":
                 st.rerun()
 
 elif menu == "🏆 Sala de Troféus":
-    # AQUI: Injeta Vídeo + CSS de Transparência
-    st.markdown(arena_css + video_html, unsafe_allow_html=True)
-    
     st.title("🏆 Galeria de Conquistas")
     df = get_desafios()
     if df.empty:
-        st.markdown(f"""
-            <div style="background-color: rgba(0, 0, 0, 0.5); border: 2px solid #00D1FF; border-radius: 25px; padding: 40px; text-align: center; color: #FFFFFF; box-shadow: 0 0 20px rgba(0, 209, 255, 0.2);">
-                <h2 style="color: #FFFFFF;">🏟️ Campo Vazio!</h2>
-                <p style="font-size: 1.2em;">Você ainda não registrou nenhuma jogada.<br>
-                <b style="color: #FFD700;">Bora pro campo e conquiste seus troféus! ⚽</b></p>
-            </div>
-        """, unsafe_allow_html=True)
+        st.info("Você ainda não jogou! Bora pro campo! ⚽")
     else:
         opcoes = df['id'].tolist()
         nomes = [f"ID {id} - {row['tema']} ({row['categoria']}) - {row['data']}" for id, row in zip(df['id'], df.to_dict('records'))]
@@ -356,7 +297,7 @@ elif menu == "🏆 Sala de Troféus":
             questoes = get_questoes(escolha)
             for i, q in enumerate(questoes):
                 st.markdown(f"""<div class="q-card">
-                    <strong style="color:#FFFFFF;">{q['area']} | Questão {i+1}</strong><br>{q['pergunta']}<br><br>
-                    <span style="color:#39FF14"><b>Resposta de Craque: {q['correta']}</b></span><br>
-                    <small><b style="color:#FFD700;">✅ Dica:</b> {q['justificativa']}</small>
+                    <strong style="color:#1B5E20;">{q['area']} | Questão {i+1}</strong><br>{q['pergunta']}<br><br>
+                    <span style="color:#2E7D32"><b>Resposta de Craque: {q['correta']}</b></span><br>
+                    <small><b style="color:#1B5E20;">✅ Dica:</b> {q['justificativa']}</small>
                 </div>""", unsafe_allow_html=True)
