@@ -99,7 +99,7 @@ def ai_generate_football_quiz(categoria, posicao, tema, qtd):
     return res.get("questoes", [])
 
 # ==============================================================================
-# 4. SISTEMA VISUAL "FOCUS ARENA" (Harmonizado)
+# 4. SISTEMA VISUAL (SISTEMA DIVIDIDO)
 # ==============================================================================
 
 def get_video_base64(video_path):
@@ -112,100 +112,70 @@ def get_video_base64(video_path):
 
 VIDEO_B64 = get_video_base64("arena.mp4")
 
-style_css = """
+# CSS que se aplica a TODAS as páginas (Botões, Sidebar, Fontes)
+global_css = """
     <style>
-    .video-background {
-        position: fixed;
-        right: 0;
-        bottom: 0;
-        min-width: 100%;
-        min-height: 100%;
-        width: auto;
-        height: auto;
-        z-index: -1; 
-        object-fit: cover;
-    }
-
-    .stApp { 
-        background: transparent !important; 
-        background-color: transparent !important;
-    }
-    
-    /* CAIXA PRINCIPAL: 75% de transparência (Sua solicitação) */
-    .main .block-container {
-        background-color: rgba(0, 0, 0, 0.75) !important; 
-        backdrop-filter: blur(15px); 
-        border-radius: 30px;
-        padding: 35px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #FFFFFF !important;
-    }
-
-    /* MENU LATERAL: Azul Escuro Sólido para estabilidade visual */
     [data-testid="stSidebar"] { 
         background-color: #001A33 !important; 
         border-right: 6px solid #FFD700; 
     }
-    
-    [data-testid="stSidebar"] .stMarkdown, 
-    [data-testid="stSidebar"] label, 
-    [data-testid="stSidebar"] .stText,
-    [data-testid="stSidebar"] span,
-    [data-testid="stSidebar"] p {
-        color: #FFFFFF !important;
-        font-weight: bold !important;
+    [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label, 
+    [data-testid="stSidebar"] .stText, [data-testid="stSidebar"] span, [data-testid="stSidebar"] p {
+        color: #FFFFFF !important; font-weight: bold !important;
     }
+    [data-testid="stSidebar"] div[role="radiogroup"] label { color: #FFFFFF !important; }
 
-    [data-testid="stSidebar"] div[role="radiogroup"] label {
-        color: #FFFFFF !important;
-    }
-
-    /* ZONA DE FOCO: Questões com fundo SÓLIDO para não perder atenção */
     .q-card { 
-        background-color: #0A0A0A !important; /* Preto quase absoluto */
-        padding: 30px; 
-        border-radius: 25px; 
-        border: 3px solid #00D1FF; /* Borda Azul Neon para destacar */
-        margin-bottom: 30px; 
-        color: #FFFFFF !important; 
-        box-shadow: 0 10px 30px rgba(0, 209, 255, 0.2); 
-        font-family: 'Arial', sans-serif; /* Letras mais limpas para leitura rápida */
+        background-color: #0A0A0A !important; 
+        padding: 30px; border-radius: 25px; border: 3px solid #00D1FF; 
+        margin-bottom: 30px; color: #FFFFFF !important; 
+        box-shadow: 0 10px 30px rgba(0, 209, 255, 0.2); font-family: 'Arial', sans-serif; 
     }
 
-    /* BOTÕES: Azul Neon */
     .stButton>button { 
-        background-color: #00D1FF !important; 
-        color: #000000 !important; 
-        font-weight: 900 !important; 
-        font-size: 18px !important;
-        border-radius: 50px !important; 
-        border: 2px solid #FFFFFF !important; 
-        padding: 10px 30px !important;
-        transition: 0.3s; 
-        text-transform: uppercase;
+        background-color: #00D1FF !important; color: #000000 !important; 
+        font-weight: 900 !important; font-size: 18px !important;
+        border-radius: 50px !important; border: 2px solid #FFFFFF !important; 
+        padding: 10px 30px !important; transition: 0.3s; text-transform: uppercase;
         box-shadow: 0 0 15px #00D1FF;
     }
-    
     .stButton>button:hover { 
-        background-color: #FFFFFF !important; 
-        color: #00D1FF !important; 
-        transform: scale(1.05); 
-        box-shadow: 0 0 25px #FFFFFF;
+        background-color: #FFFFFF !important; color: #00D1FF !important; 
+        transform: scale(1.05); box-shadow: 0 0 25px #FFFFFF;
     }
 
-    h1, h2, h3 { 
-        color: #FFFFFF !important; 
-        font-weight: 900 !important;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-
+    h1, h2, h3 { color: #FFFFFF !important; font-weight: 900 !important; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
     .stTextInput>div>div>input, .stSelectbox>div>div>div { 
-        border-radius: 15px !important; 
-        border: 2px solid rgba(255, 255, 255, 0.5) !important;
-        background-color: rgba(0, 0, 0, 0.6) !important;
+        border-radius: 15px !important; border: 2px solid rgba(255, 255, 255, 0.5) !important;
+        background-color: rgba(0, 0, 0, 0.6) !important; color: #FFFFFF !important;
+    }
+    </style>
+"""
+
+# CSS específico para as páginas com VÍDEO (Transparência e Background)
+arena_css = """
+    <style>
+    .video-background {
+        position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%;
+        width: auto; height: auto; z-index: -1; object-fit: cover;
+    }
+    .stApp { background: transparent !important; }
+    .main .block-container {
+        background-color: rgba(0, 0, 0, 0.75) !important; 
+        backdrop-filter: blur(15px); border-radius: 30px;
+        padding: 35px; margin-top: 20px; margin-bottom: 20px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.2); color: #FFFFFF !important;
+    }
+    </style>
+"""
+
+# CSS para a zona de JOGO (Fundo Sólido para Foco Total)
+focus_css = """
+    <style>
+    .stApp { background-color: #050505 !important; }
+    .main .block-container {
+        background-color: #050505 !important; 
         color: #FFFFFF !important;
     }
     </style>
@@ -223,13 +193,18 @@ video_html = f"""
 
 init_db()
 st.set_page_config(page_title="Base Craque AI ⚽", layout="wide", page_icon="⚽")
-st.markdown(style_css + video_html, unsafe_allow_html=True)
+
+# Injeta sempre o CSS Global
+st.markdown(global_css, unsafe_allow_html=True)
 
 st.sidebar.title("⚽ Base Craque AI")
 st.sidebar.markdown("### MENU DO JOGO")
 menu = st.sidebar.radio("Escolha sua fase:", ["🏠 Vestiário", "🎮 Jogar Desafio", "🏆 Sala de Troféus"])
 
 if menu == "🏠 Vestiário":
+    # AQUI: Injeta Vídeo + CSS de Transparência
+    st.markdown(arena_css + video_html, unsafe_allow_html=True)
+    
     st.markdown("<h1 style='text-align: center; font-size: 3.2em; color: #FFFFFF;'>🏟️ Bem-vindo ao Vestiário, Craque!</h1>", unsafe_allow_html=True)
     
     col1, col2 = st.columns([2, 1])
@@ -249,7 +224,6 @@ if menu == "🏠 Vestiário":
         </div>
         """, unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
-        
         st.markdown(f"""
             <div style="background-color: rgba(57, 255, 20, 0.2); border-left: 8px solid #39FF14; padding: 15px; border-radius: 10px; color: #39FF14; font-weight: bold; box-shadow: 0 0 10px #39FF14;">
                 💡 Dica do Prof: 'Quem estuda o jogo, joga com a bola no pé!' ⚽
@@ -263,6 +237,9 @@ if menu == "🏠 Vestiário":
             st.write("🚀 *Prepare-se para o jogo!*")
 
 elif menu == "🎮 Jogar Desafio":
+    # AQUI: Injeta CSS de Fundo Sólido (SÉM VÍDEO)
+    st.markdown(focus_css, unsafe_allow_html=True)
+    
     st.title("🎮 Desafio de QI de Jogo")
     
     with st.container():
@@ -358,6 +335,9 @@ elif menu == "🎮 Jogar Desafio":
                 st.rerun()
 
 elif menu == "🏆 Sala de Troféus":
+    # AQUI: Injeta Vídeo + CSS de Transparência
+    st.markdown(arena_css + video_html, unsafe_allow_html=True)
+    
     st.title("🏆 Galeria de Conquistas")
     df = get_desafios()
     if df.empty:
