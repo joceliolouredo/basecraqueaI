@@ -99,7 +99,7 @@ def ai_generate_football_quiz(categoria, posicao, tema, qtd):
     return res.get("questoes", [])
 
 # ==============================================================================
-# 4. SISTEMA VISUAL "CYBER FIELD" (Sincronizado com Campo Escuro)
+# 4. SISTEMA VISUAL "FOCUS ARENA" (Sincronizado e Legível)
 # ==============================================================================
 
 def get_video_base64(video_path):
@@ -131,22 +131,22 @@ style_css = """
         background-color: transparent !important;
     }
     
-    /* PAINEL PRINCIPAL: 75% de Transparência’ com Vidro Fumê */
+    /* CAIXA PRINCIPAL: 75% Transparência */
     .main .block-container {
-        background-color: rgba(15, 15, 15, 0.75) !important; 
-        backdrop-filter: blur(20px); 
-        border-radius: 35px;
+        background-color: rgba(0, 0, 0, 0.75) !important; 
+        backdrop-filter: blur(15px); 
+        border-radius: 30px;
         padding: 35px;
         margin-top: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         color: #FFFFFF !important;
     }
 
-    /* MENU LATERAL: Azul Noturno Profundo */
+    /* MENU LATERAL */
     [data-testid="stSidebar"] { 
-        background-color: #000D1A !important; 
+        background-color: #001A33 !important; 
         border-right: 6px solid #FFD700; 
     }
     
@@ -160,32 +160,31 @@ style_css = """
         color: #FFFFFF !important;
     }
 
-    /* ZONA DE FOCO: Questões com Fundo Sólido Profundo */
+    /* ZONA de FOCO: Questões Sólidas */
     .q-card { 
-        background-color: #050505 !important; 
+        background-color: #0A0A0A !important; 
         padding: 30px; 
         border-radius: 25px; 
-        border: 2px solid #00D1FF; /* Borda Neon Blue */
+        border: 3px solid #00D1FF; 
         margin-bottom: 30px; 
         color: #FFFFFF !important; 
-        box-shadow: 0 10px 30px rgba(0, 209, 255, 0.15); 
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        box-shadow: 0 10px 30px rgba(0, 209, 255, 0.2); 
+        font-family: 'Arial', sans-serif; 
     }
 
-    /* CORREÇÃO DE LEITURA: Opções do Quiz */
+    /* CORREÇÃO CRÍTICA: Letras das opções do Radio Button */
     div[role="radiogroup"] label {
         color: #FFFFFF !important;
         font-size: 1.1em !important;
-        font-weight: 500 !important;
-        background-color: rgba(255, 255, 255, 0.08) !important;
-        padding: 12px 18px !important;
-        border-radius: 12px !important;
-        margin-bottom: 8px !important;
+        font-weight: bold !important;
+        background-color: rgba(255,255,255,0.1);
+        padding: 10px 15px !important;
+        border-radius: 10px !important;
+        margin-bottom: 5px !important;
         display: block !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
 
-    /* BOTÕES: Azul Neon Glow */
+    /* BOTÕES NEON */
     .stButton>button { 
         background-color: #00D1FF !important; 
         color: #000000 !important; 
@@ -196,26 +195,24 @@ style_css = """
         padding: 10px 30px !important;
         transition: 0.3s; 
         text-transform: uppercase;
-        box-shadow: 0 0 20px rgba(0, 209, 255, 0.6);
+        box-shadow: 0 0 15px #00D1FF;
     }
     
     .stButton>button:hover { 
         background-color: #FFFFFF !important; 
         color: #00D1FF !important; 
         transform: scale(1.05); 
-        box-shadow: 0 0 30px #FFFFFF;
+        box-shadow: 0 0 25px #FFFFFF;
     }
 
     h1, h2, h3 { 
         color: #FFFFFF !important; 
         font-weight: 900 !important;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
     }
 
-    /* Inputs Harmonizados */
     .stTextInput>div>div>input, .stSelectbox>div>div>div { 
         border-radius: 15px !important; 
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        border: 2px solid rgba(255, 255, 255, 0.5) !important;
         background-color: rgba(0, 0, 0, 0.6) !important;
         color: #FFFFFF !important;
     }
@@ -236,7 +233,6 @@ init_db()
 st.set_page_config(page_title="Base Craque AI ⚽", layout="wide", page_icon="⚽")
 st.markdown(style_css + video_html, unsafe_allow_html=True)
 
-st.sidebarC_title = "⚽ Base Craque AI"
 st.sidebar.title("⚽ Base Craque AI")
 st.sidebar.markdown("### MENU DO JOGO")
 menu = st.sidebar.radio("Escolha sua fase:", ["🏠 Vestiário", "🎮 Jogar Desafio", "🏆 Sala de Troféus"])
@@ -247,12 +243,12 @@ if menu == "🏠 Vestiário":
     col1, col2 = st.columns([2, 1])
     with col1:
         st.markdown("""
-        <div style="background-color: rgba(255,255,255,0.08); padding: 35px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); color: #FFFFFF; box-shadow: 0 10px 20px rgba(0,0,0,0.4);">
+        <div style="background-color: rgba(255,255,255,0.1); padding: 35px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.3); color: #FFFFFF; box-shadow: 0 10px 20px rgba(0,0,0,0.4);">
             <h2 style="margin-top:0; color:#FFD700; border-bottom: 3px solid #FFD700; display: inline-block;">Bora subir de nível? 🚀⚽</h2>
             <p style="font-size: 1.4em; line-height: 1.6; color: #FFFFFF;">Aqui você treina a <b style="color:#FFD700; font-size: 1.5em;">MENTE</b> para se tornar o melhor do campo! 
             Aprenda as manhas da tática, as dicas de saúde e as regras para não levar cartão!</p>
             <br>
-            <div style="font-size: 1.2em; background-color: rgba(0,0,0,0.6); padding: 20px; border-radius: 20px; border: 1px solid #FFD700;">
+            <div style="font-size: 1.2em; background-color: rgba(0,0,0,0.5); padding: 20px; border-radius: 20px; border: 1px solid #FFD700;">
                 🎯 <b style="color:#FFD700;">QI DE JOGO:</b> Teste sua visão de craque.<br>
                 🍎 <b style="color:#FFD700;">COMIDA de CAMPEÃO:</b> Nutrição para ter energia.<br>
                 📜 <b style="color:#FFD700;">REGRA DA BOLA:</b> Para dominar o juiz!<br>
@@ -263,7 +259,7 @@ if menu == "🏠 Vestiário":
         st.markdown("<br>", unsafe_allow_html=True)
         
         st.markdown(f"""
-            <div style="background-color: rgba(57, 255, 20, 0.1); border-left: 8px solid #39FF14; padding: 15px; border-radius: 10px; color: #39FF14; font-weight: bold; box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);">
+            <div style="background-color: rgba(57, 255, 20, 0.2); border-left: 8px solid #39FF14; padding: 15px; border-radius: 10px; color: #39FF14; font-weight: bold; box-shadow: 0 0 10px #39FF14;">
                 💡 Dica do Prof: 'Quem estuda o jogo, joga com a bola no pé!' ⚽
             </div>
         """, unsafe_allow_html=True)
@@ -358,6 +354,7 @@ elif menu == "🎮 Jogar Desafio":
                 correct = q['correta']
                 color = "#39FF14" if user_ans == correct else "#FF3131"
                 
+                # ESTILO DE RESPOSTA MELHORADO (Badges)
                 st.markdown(f"""
                 <div class="q-card" style="border-left: 10px solid {color}">
                     <strong style="color:#FFFFFF;">{q['area']} | Pergunta {i+1}</strong><br>
@@ -388,7 +385,7 @@ elif menu == "🏆 Sala de Troféus":
     df = get_desafios()
     if df.empty:
         st.markdown(f"""
-            <div style="background-color: rgba(0, 0, 0, 0.6); border: 2px solid #00D1FF; border-radius: 25px; padding: 40px; text-align: center; color: #FFFFFF; box-shadow: 0 0 20px rgba(0, 209, 255, 0.2);">
+            <div style="background-color: rgba(0, 0, 0, 0.5); border: 2px solid #00D1FF; border-radius: 25px; padding: 40px; text-align: center; color: #FFFFFF; box-shadow: 0 0 20px rgba(0, 209, 255, 0.2);">
                 <h2 style="color: #FFFFFF;">🏟️ Campo Vazio!</h2>
                 <p style="font-size: 1.2em;">Você ainda não registrou nenhuma jogada.<br>
                 <b style="color: #FFD700;">Bora pro campo e conquiste seus troféus! ⚽</b></p>
