@@ -98,28 +98,34 @@ def ai_generate_football_quiz(categoria, posicao, tema, qtd):
     return res.get("questoes", [])
 
 # ==============================================================================
-# 4. INTERFACE GAMIFICADA (KIDS/BASE THEME)
+# 4. INTERFACE GAMIFICADA - TEMA CLARO (LIGHT MODE)
 # ==============================================================================
 
-init_db() # Inicializa primeiro!
+init_db()
 
 st.set_page_config(page_title="Base Craque AI ⚽", layout="wide", page_icon="⚽")
 
-# CSS COM CARA DE GAME
+# CSS TOTALMENTE CLARO
 st.markdown("""
     <style>
+    /* Fundo Geral: Verde bem clarinho (quase branco) */
     .stApp { 
-        background-color: #E1FFD1; 
+        background-color: #F9FFF5; 
         color: #1B5E20; 
     }
+    
+    /* Sidebar: Agora em tom claro */
     [data-testid="stSidebar"] { 
-        background-color: #4CAF50 !important; 
-        color: white !important; 
-        border-right: 5px solid #FFD700; 
+        background-color: #FFFFFF !important; 
+        border-right: 6px solid #FFD700; 
     }
-    [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label {
-        color: white !important;
+    
+    /* Texto da Sidebar: Verde Escuro para leitura */
+    [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label, [data-testid="stSidebar"] .stText {
+        color: #1B5E20 !important;
     }
+
+    /* Cards de Questões: Branco com borda dourada */
     .q-card { 
         background-color: #FFFFFF; 
         padding: 25px; 
@@ -127,9 +133,11 @@ st.markdown("""
         border: 4px solid #FFD700; 
         margin-bottom: 25px; 
         color: #333; 
-        box-shadow: 8px 8px 0px #2E7D32; 
+        box-shadow: 8px 8px 0px #C8E6C9; 
         font-family: 'Comic Sans MS', cursive, sans-serif;
     }
+    
+    /* Botões: Dourado Vibrante */
     .stButton>button { 
         background-color: #FFD700 !important; 
         color: #1B5E20 !important; 
@@ -143,17 +151,21 @@ st.markdown("""
     }
     .stButton>button:hover { 
         background-color: #FFFFFF !important; 
-        transform: scale(1.1); 
-        box-shadow: 0 0 20px #FFD700;
+        transform: scale(1.05); 
+        box-shadow: 0 0 15px #FFD700;
     }
+    
     h1, h2, h3 { 
         color: #1B5E20 !important; 
         font-family: 'Comic Sans MS', cursive, sans-serif !important; 
-        text-shadow: 2px 2px #FFD700;
+        text-shadow: 1px 1px #FFD700;
     }
+    
+    /* Inputs arredondados e claros */
     .stTextInput>div>div>input, .stSelectbox>div>div>div { 
         border-radius: 20px !important; 
-        border: 2px solid #4CAF50 !important;
+        border: 2px solid #C8E6C9 !important;
+        background-color: white !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -167,23 +179,23 @@ if menu == "🏠 Vestiário":
     col1, col2 = st.columns([2, 1])
     with col1:
         st.markdown("""
-        <div style="background-color: white; padding: 30px; border-radius: 30px; border: 4px solid #FFD700; box-shadow: 10px 10px 0px #4CAF50;">
+        <div style="background-color: white; padding: 30px; border-radius: 30px; border: 4px solid #FFD700; box-shadow: 10px 10px 0px #C8E6C9;">
             <h2 style="margin-top:0;">Bora subir de nível? 🚀⚽</h2>
             <p style="font-size: 1.2em;">Aqui você treina a <b>mente</b> para se tornar o melhor do campo! 
             Aprenda as manhas da tática, as dicas de saúde e as regras para não levar cartão!</p>
             <br>
             <div style="font-size: 1.1em;">
-                🎯 <b>QI DE JOGO:</b> Teste sua visão de craque.<br>
-                🍎 <b>COMIDA DE CAMPEÃO:</b> Nutrição para ter energia.<br>
-                📜 <b>REGRA DA BOLA:</b> Para dominar o juiz!<br>
-                🛡️ <b>MENTALIDADE:</b> Foco total no gol!
-            </div>
+                🎯 <b style="color:#1B5E20;">QI DE JOGO:</b> Teste sua visão de craque.<br>
+                🍎 <b style="color:#1B5E20;">COMIDA DE CAMPEÃO:</b> Nutrição para ter energia.<br>
+                📜 <b style="color:#1B5E20;">REGRA DA BOLA:</b> Para dominar o juiz!<br>
+                🛡️ <b style="color:#1B5E20;">MENTALIDADE:</b> Foco total no gol!
+            </div
             </div>
         """, unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
         st.success("💡 **Dica do Prof:** 'Quem estuda o jogo, joga com a bola no pé!' ⚽")
     with col2:
-        # AQUI ESTÁ A ALTERAÇÃO PARA O SEU ARQUIVO ESPECÍFICO
+        # Imagem configurada conforme seu arquivo
         st.image("jogador.jpg.png", use_container_width=True)
 
 elif menu == "🎮 Jogar Desafio":
