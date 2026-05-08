@@ -98,38 +98,61 @@ def ai_generate_football_quiz(categoria, posicao, tema, qtd):
     return res.get("questoes", [])
 
 # ==============================================================================
-# 4. INTERFACE GAMIFICADA - TEMA CLARO (LIGHT MODE)
+# 4. INTERFACE GAMIFICADA - FUNDO DE CAMPO (KIDS MODE)
 # ==============================================================================
 
 init_db()
 
 st.set_page_config(page_title="Base Craque AI ⚽", layout="wide", page_icon="⚽")
 
-# CSS TOTALMENTE CLARO
-st.markdown("""
+# LINK DA IMAGEM DO CAMPO (Você pode trocar por uma URL ou arquivo local)
+# Usei uma imagem de campo verde vibrante
+CAMPO_URL = "https://images.unsplash.com/photo-1551970634-1837371a0221?q=80&w=2000&auto=format&fit=crop"
+
+st.markdown(f"""
     <style>
-    .stApp { 
-        background-color: #F9FFF5; 
-        color: #1B5E20; 
-    }
-    [data-testid="stSidebar"] { 
-        background-color: #FFFFFF !important; 
+    /* Fundo do App: Imagem de Campo de Futebol */
+    .stApp {{ 
+        background-image: url('{CAMPO_URL}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }}
+    
+    /* Overlay para suavizar a imagem e garantir leitura */
+    .stApp::before {{
+        content: "";
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(255, 255, 255, 0.3); 
+        z-index: -1;
+    }}
+
+    /* Sidebar: Estilo Vidro Transparente */
+    [data-testid="stSidebar"] {{ 
+        background-color: rgba(255, 255, 255, 0.8) !important; 
+        backdrop-filter: blur(10px);
         border-right: 6px solid #FFD700; 
-    }
-    [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label, [data-testid="stSidebar"] .stText {
+    }}
+    
+    [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label, [data-testid="stSidebar"] .stText {{
         color: #1B5E20 !important;
-    }
-    .q-card { 
-        background-color: #FFFFFF; 
+    }}
+
+    /* Cards de Questões: Efeito Vidro Branco */
+    .q-card {{ 
+        background-color: rgba(255, 255, 255, 0.9); 
         padding: 25px; 
         border-radius: 25px; 
         border: 4px solid #FFD700; 
         margin-bottom: 25px; 
         color: #333; 
-        box-shadow: 8px 8px 0px #C8E6C9; 
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2); 
         font-family: 'Comic Sans MS', cursive, sans-serif;
-    }
-    .stButton>button { 
+    }}
+    
+    /* Botões: Dourados e Vibrantes */
+    .stButton>button {{ 
         background-color: #FFD700 !important; 
         color: #1B5E20 !important; 
         font-weight: 900 !important; 
@@ -139,22 +162,25 @@ st.markdown("""
         padding: 10px 20px !important;
         transition: 0.2s; 
         text-transform: uppercase;
-    }
-    .stButton>button:hover { 
+    }}
+    .stButton>button:hover {{ 
         background-color: #FFFFFF !important; 
         transform: scale(1.05); 
         box-shadow: 0 0 15px #FFD700;
-    }
-    h1, h2, h3 { 
+    }}
+    
+    h1, h2, h3 {{ 
         color: #1B5E20 !important; 
         font-family: 'Comic Sans MS', cursive, sans-serif !important; 
-        text-shadow: 1px 1px #FFD700;
-    }
-    .stTextInput>div>div>input, .stSelectbox>div>div>div { 
+        text-shadow: 2px 2px white;
+    }}
+    
+    /* Inputs: Vidro Branco */
+    .stTextInput>div>div>input, .stSelectbox>div>div>div {{ 
         border-radius: 20px !important; 
-        border: 2px solid #C8E6C9 !important;
-        background-color: white !important;
-    }
+        border: 2px solid #4CAF50 !important;
+        background-color: rgba(255, 255, 255, 0.9) !important;
+    }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -167,7 +193,7 @@ if menu == "🏠 Vestiário":
     col1, col2 = st.columns([2, 1])
     with col1:
         st.markdown("""
-        <div style="background-color: white; padding: 30px; border-radius: 30px; border: 4px solid #FFD700; box-shadow: 10px 10px 0px #C8E6C9;">
+        <div style="background-color: rgba(255, 255, 255, 0.9); padding: 30px; border-radius: 30px; border: 4px solid #FFD700; box-shadow: 10px 10px 0px rgba(76, 175, 80, 0.5);">
             <h2 style="margin-top:0;">Bora subir de nível? 🚀⚽</h2>
             <p style="font-size: 1.2em;">Aqui você treina a <b>mente</b> para se tornar o melhor do campo! 
             Aprenda as manhas da tática, as dicas de saúde e as regras para não levar cartão!</p>
@@ -201,7 +227,7 @@ elif menu == "🎮 Jogar Desafio":
         with st.spinner("🏃 Professor preparando o campo..."):
             try:
                 questoes = ai_generate_football_quiz(categoria, posicao, tema, qtd_total)
-                if questoes and len(questoes) > 0: # Verifica se a IA realmente trouxe questões
+                if questoes and len(questoes) > 0:
                     id_desafio = save_desafio(categoria, posicao, tema)
                     save_questoes(id_desafio, questoes)
                     st.session_state.desafio_atual_id = id_desafio
@@ -244,12 +270,10 @@ elif menu == "🎮 Jogar Desafio":
                     acertos += 1
                     stats[area]["corretas"] += 1
             
-            # --- CORREÇÃO DO ZERO DIVISION ERROR AQUI ---
             if len(questoes) > 0:
                 score_percent = (acertos / len(questoes)) * 100
             else:
                 score_percent = 0
-            # --------------------------------------------
 
             if score_percent >= 90: nivel = "🌟 LENDA DA VÁRZEA"
             elif score_percent >= 70: nivel = "🔥 PROMESSA DA BASE"
