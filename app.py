@@ -99,7 +99,7 @@ def ai_generate_football_quiz(categoria, posicao, tema, qtd):
     return res.get("questoes", [])
 
 # ==============================================================================
-# 4. SISTEMA VISUAL "CYBER ARENA" (Ajuste de Menu Lateral)
+# 4. SISTEMA VISUAL "FOCUS ARENA" (Harmonizado)
 # ==============================================================================
 
 def get_video_base64(video_path):
@@ -131,50 +131,48 @@ style_css = """
         background-color: transparent !important;
     }
     
-    /* CAIXAS: Vidro Fosco Dark */
+    /* CAIXA PRINCIPAL: 75% de transparência (Sua solicitação) */
     .main .block-container {
-        background-color: rgba(0, 0, 0, 0.7) !important; 
-        backdrop-filter: blur(20px); 
+        background-color: rgba(0, 0, 0, 0.75) !important; 
+        backdrop-filter: blur(15px); 
         border-radius: 30px;
         padding: 35px;
         margin-top: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.2);
         color: #FFFFFF !important;
     }
 
-    /* MENU LATERAL: Azul Escuro com Textos Brancos Forçados */
+    /* MENU LATERAL: Azul Escuro Sólido para estabilidade visual */
     [data-testid="stSidebar"] { 
         background-color: #001A33 !important; 
         border-right: 6px solid #FFD700; 
     }
     
-    /* Alvos específicos para garantir o branco no menu */
     [data-testid="stSidebar"] .stMarkdown, 
     [data-testid="stSidebar"] label, 
     [data-testid="stSidebar"] .stText,
     [data-testid="stSidebar"] span,
     [data-testid="stSidebar"] p {
         color: #FFFFFF !important;
-    }
-
-    /* COR DOS LABELS DO RADIO BUTTON NO MENU */
-    [data-testid="stSidebar"] div[role="radiogroup"] label {
-        color: #FFFFFF !important;
         font-weight: bold !important;
     }
 
-    /* CARTÕES: Vidro Dark */
+    [data-testid="stSidebar"] div[role="radiogroup"] label {
+        color: #FFFFFF !important;
+    }
+
+    /* ZONA DE FOCO: Questões com fundo SÓLIDO para não perder atenção */
     .q-card { 
-        background-color: rgba(255, 255, 255, 0.1); 
-        padding: 25px; 
-        border-radius: 20px; 
-        border: 1px solid rgba(255, 255, 255, 0.3); 
-        margin-bottom: 25px; 
-        color: #FFFFFF; 
-        box-shadow: 0 8px 15px rgba(0,0,0,0.3); 
-        font-family: 'Comic Sans MS', cursive, sans-serif;
+        background-color: #0A0A0A !important; /* Preto quase absoluto */
+        padding: 30px; 
+        border-radius: 25px; 
+        border: 3px solid #00D1FF; /* Borda Azul Neon para destacar */
+        margin-bottom: 30px; 
+        color: #FFFFFF !important; 
+        box-shadow: 0 10px 30px rgba(0, 209, 255, 0.2); 
+        font-family: 'Arial', sans-serif; /* Letras mais limpas para leitura rápida */
     }
 
     /* BOTÕES: Azul Neon */
@@ -200,16 +198,15 @@ style_css = """
 
     h1, h2, h3 { 
         color: #FFFFFF !important; 
-        font-family: 'Comic Sans MS', cursive, sans-serif !important; 
         font-weight: 900 !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
 
     .stTextInput>div>div>input, .stSelectbox>div>div>div { 
         border-radius: 15px !important; 
-        border: 1px solid rgba(255, 255, 255, 0.5) !important;
-        background-color: rgba(0, 0, 0, 0.5) !important;
+        border: 2px solid rgba(255, 255, 255, 0.5) !important;
+        background-color: rgba(0, 0, 0, 0.6) !important;
         color: #FFFFFF !important;
-        font-weight: bold !important;
     }
     </style>
 """
@@ -303,7 +300,8 @@ elif menu == "🎮 Jogar Desafio":
                 for i, q in enumerate(questoes):
                     st.markdown(f"""<div class="q-card">
                         <small style="color: #00D1FF;"><b>🌟 ÁREA: {q['area']}</b></small><br>
-                        <strong style="font-size:1.3em; color: #FFFFFF;">Questão {i+1}</strong><br>{q['pergunta']}
+                        <strong style="font-size:1.4em; color: #FFFFFF;">Questão {i+1}</strong><br>
+                        <span style="font-size:1.2em; color: #FFFFFF; display: block; margin-top: 10px;">{q['pergunta']}</span>
                     </div>""", unsafe_allow_html=True)
                     opcoes_formatadas = [f"{k}) {v}" for k, v in q['opcoes'].items()]
                     resp = st.radio(f"Qual a jogada certa?", options=opcoes_formatadas, key=f"q_{i}")
@@ -363,7 +361,13 @@ elif menu == "🏆 Sala de Troféus":
     st.title("🏆 Galeria de Conquistas")
     df = get_desafios()
     if df.empty:
-        st.info("Você ainda não jogou! Bora pro campo! ⚽")
+        st.markdown(f"""
+            <div style="background-color: rgba(0, 0, 0, 0.5); border: 2px solid #00D1FF; border-radius: 25px; padding: 40px; text-align: center; color: #FFFFFF; box-shadow: 0 0 20px rgba(0, 209, 255, 0.2);">
+                <h2 style="color: #FFFFFF;">🏟️ Campo Vazio!</h2>
+                <p style="font-size: 1.2em;">Você ainda não registrou nenhuma jogada.<br>
+                <b style="color: #FFD700;">Bora pro campo e conquiste seus troféus! ⚽</b></p>
+            </div>
+        """, unsafe_allow_html=True)
     else:
         opcoes = df['id'].tolist()
         nomes = [f"ID {id} - {row['tema']} ({row['categoria']}) - {row['data']}" for id, row in zip(df['id'], df.to_dict('records'))]
