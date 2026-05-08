@@ -108,24 +108,17 @@ st.set_page_config(page_title="Base Craque AI ⚽", layout="wide", page_icon="�
 # CSS TOTALMENTE CLARO
 st.markdown("""
     <style>
-    /* Fundo Geral: Verde bem clarinho (quase branco) */
     .stApp { 
         background-color: #F9FFF5; 
         color: #1B5E20; 
     }
-    
-    /* Sidebar: Agora em tom claro */
     [data-testid="stSidebar"] { 
         background-color: #FFFFFF !important; 
         border-right: 6px solid #FFD700; 
     }
-    
-    /* Texto da Sidebar: Verde Escuro para leitura */
     [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label, [data-testid="stSidebar"] .stText {
         color: #1B5E20 !important;
     }
-
-    /* Cards de Questões: Branco com borda dourada */
     .q-card { 
         background-color: #FFFFFF; 
         padding: 25px; 
@@ -136,8 +129,6 @@ st.markdown("""
         box-shadow: 8px 8px 0px #C8E6C9; 
         font-family: 'Comic Sans MS', cursive, sans-serif;
     }
-    
-    /* Botões: Dourado Vibrante */
     .stButton>button { 
         background-color: #FFD700 !important; 
         color: #1B5E20 !important; 
@@ -154,14 +145,11 @@ st.markdown("""
         transform: scale(1.05); 
         box-shadow: 0 0 15px #FFD700;
     }
-    
     h1, h2, h3 { 
         color: #1B5E20 !important; 
         font-family: 'Comic Sans MS', cursive, sans-serif !important; 
         text-shadow: 1px 1px #FFD700;
     }
-    
-    /* Inputs arredondados e claros */
     .stTextInput>div>div>input, .stSelectbox>div>div>div { 
         border-radius: 20px !important; 
         border: 2px solid #C8E6C9 !important;
@@ -195,7 +183,6 @@ if menu == "🏠 Vestiário":
         st.markdown("<br>", unsafe_allow_html=True)
         st.success("💡 **Dica do Prof:** 'Quem estuda o jogo, joga com a bola no pé!' ⚽")
     with col2:
-        # Imagem configurada conforme seu arquivo
         st.image("jogador.jpg.png", use_container_width=True)
 
 elif menu == "🎮 Jogar Desafio":
@@ -214,13 +201,15 @@ elif menu == "🎮 Jogar Desafio":
         with st.spinner("🏃 Professor preparando o campo..."):
             try:
                 questoes = ai_generate_football_quiz(categoria, posicao, tema, qtd_total)
-                if questoes:
+                if questoes and len(questoes) > 0: # Verifica se a IA realmente trouxe questões
                     id_desafio = save_desafio(categoria, posicao, tema)
                     save_questoes(id_desafio, questoes)
                     st.session_state.desafio_atual_id = id_desafio
                     st.session_state.respostas_usuario = {}
                     st.session_state.desafio_concluido = False
                     st.rerun()
+                else:
+                    st.error("❌ O Professor não conseguiu preparar as questões agora. Tente novamente!")
             except Exception as e:
                 st.error(f"Erro no treino: {e}")
 
@@ -255,7 +244,13 @@ elif menu == "🎮 Jogar Desafio":
                     acertos += 1
                     stats[area]["corretas"] += 1
             
-            score_percent = (acertos / len(questoes)) * 100
+            # --- CORREÇÃO DO ZERO DIVISION ERROR AQUI ---
+            if len(questoes) > 0:
+                score_percent = (acertos / len(questoes)) * 100
+            else:
+                score_percent = 0
+            # --------------------------------------------
+
             if score_percent >= 90: nivel = "🌟 LENDA DA VÁRZEA"
             elif score_percent >= 70: nivel = "🔥 PROMESSA DA BASE"
             elif score_percent >= 50: nivel = "⚽ JOGADOR REGULAR"
@@ -265,10 +260,11 @@ elif menu == "🎮 Jogar Desafio":
             with col_a: st.metric("Aproveitamento", f"{score_percent:.1f}%")
             with col_b: st.markdown(f"**Seu Nível:** <span style='font-size:20px; color:#1B5E20;'>{nivel}</span>", unsafe_allow_html=True)
 
-            df_stats = pd.DataFrame([{"Área": k, "Perc": (v["corretas"]/v["total"])*100} for k, v in stats.items()])
-            fig = go.Figure(data=go.Bar(x=df_stats['Área'], y=df_stats['Perc'], marker_color='#FFD700', text=df_stats['Perc'].apply(lambda x: f"{x:.0f}%"), textposition='auto'))
-            fig.update_layout(title="Tua Evolução no Campo!", yaxis_range=[0, 100], template="plotly_white")
-            st.plotly_chart(fig, use_container_width=True)
+            if len(stats) > 0:
+                df_stats = pd.DataFrame([{"Área": k, "Perc": (v["corretas"]/v["total"])*100} for k, v in stats.items()])
+                fig = go.Figure(data=go.Bar(x=df_stats['Área'], y=df_stats['Perc'], marker_color='#FFD700', text=df_stats['Perc'].apply(lambda x: f"{x:.0f}%"), textposition='auto'))
+                fig.update_layout(title="Tua Evolução no Campo!", yaxis_range=[0, 100], template="plotly_white")
+                st.plotly_chart(fig, use_container_width=True)
 
             st.divider()
             st.subheader("🔍 O que o Professor achou?")
