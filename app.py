@@ -99,7 +99,7 @@ def ai_generate_football_quiz(categoria, posicao, tema, qtd):
     return res.get("questoes", [])
 
 # ==============================================================================
-# 4. SISTEMA VISUAL "CYBER ARENA" (Dark Glass + Neon)
+# 4. SISTEMA VISUAL "CYBER ARENA" (Ajuste de Menu Lateral)
 # ==============================================================================
 
 def get_video_base64(video_path):
@@ -131,7 +131,7 @@ style_css = """
         background-color: transparent !important;
     }
     
-    /* CAIXAS: Vidro Fosco Dark (Glassmorphism) */
+    /* CAIXAS: Vidro Fosco Dark */
     .main .block-container {
         background-color: rgba(0, 0, 0, 0.7) !important; 
         backdrop-filter: blur(20px); 
@@ -144,18 +144,28 @@ style_css = """
         color: #FFFFFF !important;
     }
 
-    /* MENU: Azul Escuro Profundo */
+    /* MENU LATERAL: Azul Escuro com Textos Brancos Forçados */
     [data-testid="stSidebar"] { 
         background-color: #001A33 !important; 
         border-right: 6px solid #FFD700; 
     }
     
-    [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label, [data-testid="stSidebar"] .stText {
+    /* Alvos específicos para garantir o branco no menu */
+    [data-testid="stSidebar"] .stMarkdown, 
+    [data-testid="stSidebar"] label, 
+    [data-testid="stSidebar"] .stText,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] p {
+        color: #FFFFFF !important;
+    }
+
+    /* COR DOS LABELS DO RADIO BUTTON NO MENU */
+    [data-testid="stSidebar"] div[role="radiogroup"] label {
         color: #FFFFFF !important;
         font-weight: bold !important;
     }
 
-    /* CARTÕES: Vidro Dark com borda branca transparente */
+    /* CARTÕES: Vidro Dark */
     .q-card { 
         background-color: rgba(255, 255, 255, 0.1); 
         padding: 25px; 
@@ -167,7 +177,7 @@ style_css = """
         font-family: 'Comic Sans MS', cursive, sans-serif;
     }
 
-    /* BOTÕES: Azul Neon com Glow */
+    /* BOTÕES: Azul Neon */
     .stButton>button { 
         background-color: #00D1FF !important; 
         color: #000000 !important; 
@@ -188,14 +198,12 @@ style_css = """
         box-shadow: 0 0 25px #FFFFFF;
     }
 
-    /* TÍTULOS: Branco Puro */
     h1, h2, h3 { 
         color: #FFFFFF !important; 
         font-family: 'Comic Sans MS', cursive, sans-serif !important; 
         font-weight: 900 !important;
     }
 
-    /* Inputs: Dark com bordas branco transparente */
     .stTextInput>div>div>input, .stSelectbox>div>div>div { 
         border-radius: 15px !important; 
         border: 1px solid rgba(255, 255, 255, 0.5) !important;
@@ -245,7 +253,6 @@ if menu == "🏠 Vestiário":
         """, unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
         
-        # SUCESSO NEON GREEN
         st.markdown(f"""
             <div style="background-color: rgba(57, 255, 20, 0.2); border-left: 8px solid #39FF14; padding: 15px; border-radius: 10px; color: #39FF14; font-weight: bold; box-shadow: 0 0 10px #39FF14;">
                 💡 Dica do Prof: 'Quem estuda o jogo, joga com a bola no pé!' ⚽
