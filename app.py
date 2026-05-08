@@ -99,7 +99,7 @@ def ai_generate_football_quiz(categoria, posicao, tema, qtd):
     return res.get("questoes", [])
 
 # ==============================================================================
-# 4. SISTEMA VISUAL "FOCUS ARENA" (Sincronizado e Legível)
+# 4. SISTEMA VISUAL "FOCUS ARENA" (Harmonizado)
 # ==============================================================================
 
 def get_video_base64(video_path):
@@ -131,7 +131,7 @@ style_css = """
         background-color: transparent !important;
     }
     
-    /* CAIXA PRINCIPAL: 75% Transparência */
+    /* CAIXA PRINCIPAL: 75% de transparência (Sua solicitação) */
     .main .block-container {
         background-color: rgba(0, 0, 0, 0.75) !important; 
         backdrop-filter: blur(15px); 
@@ -144,14 +144,17 @@ style_css = """
         color: #FFFFFF !important;
     }
 
-    /* MENU LATERAL */
+    /* MENU LATERAL: Azul Escuro Sólido para estabilidade visual */
     [data-testid="stSidebar"] { 
         background-color: #001A33 !important; 
         border-right: 6px solid #FFD700; 
     }
     
-    [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label, 
-    [data-testid="stSidebar"] .stText, [data-testid="stSidebar"] span, [data-testid="stSidebar"] p {
+    [data-testid="stSidebar"] .stMarkdown, 
+    [data-testid="stSidebar"] label, 
+    [data-testid="stSidebar"] .stText,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] p {
         color: #FFFFFF !important;
         font-weight: bold !important;
     }
@@ -160,31 +163,19 @@ style_css = """
         color: #FFFFFF !important;
     }
 
-    /* ZONA de FOCO: Questões Sólidas */
+    /* ZONA DE FOCO: Questões com fundo SÓLIDO para não perder atenção */
     .q-card { 
-        background-color: #0A0A0A !important; 
+        background-color: #0A0A0A !important; /* Preto quase absoluto */
         padding: 30px; 
         border-radius: 25px; 
-        border: 3px solid #00D1FF; 
+        border: 3px solid #00D1FF; /* Borda Azul Neon para destacar */
         margin-bottom: 30px; 
         color: #FFFFFF !important; 
         box-shadow: 0 10px 30px rgba(0, 209, 255, 0.2); 
-        font-family: 'Arial', sans-serif; 
+        font-family: 'Arial', sans-serif; /* Letras mais limpas para leitura rápida */
     }
 
-    /* CORREÇÃO CRÍTICA: Letras das opções do Radio Button */
-    div[role="radiogroup"] label {
-        color: #FFFFFF !important;
-        font-size: 1.1em !important;
-        font-weight: bold !important;
-        background-color: rgba(255,255,255,0.1);
-        padding: 10px 15px !important;
-        border-radius: 10px !important;
-        margin-bottom: 5px !important;
-        display: block !important;
-    }
-
-    /* BOTÕES NEON */
+    /* BOTÕES: Azul Neon */
     .stButton>button { 
         background-color: #00D1FF !important; 
         color: #000000 !important; 
@@ -208,6 +199,7 @@ style_css = """
     h1, h2, h3 { 
         color: #FFFFFF !important; 
         font-weight: 900 !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
 
     .stTextInput>div>div>input, .stSelectbox>div>div>div { 
@@ -353,27 +345,12 @@ elif menu == "🎮 Jogar Desafio":
                 user_ans = st.session_state.respostas_usuario.get(i, "N/A")
                 correct = q['correta']
                 color = "#39FF14" if user_ans == correct else "#FF3131"
-                
-                # ESTILO DE RESPOSTA MELHORADO (Badges)
-                st.markdown(f"""
-                <div class="q-card" style="border-left: 10px solid {color}">
-                    <strong style="color:#FFFFFF;">{q['area']} | Pergunta {i+1}</strong><br>
-                    <span style="font-size:1.1em; color: #CCC; display:block; margin-bottom:15px;">{q['pergunta']}</span>
-                    
-                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                        <span style="background-color: {color}; color: #000; padding: 5px 12px; border-radius: 8px; font-weight: bold; font-size: 0.9em;">
-                            Tua jogada: {user_ans}
-                        </span>
-                        <span style="background-color: #39FF14; color: #000; padding: 5px 12px; border-radius: 8px; font-weight: bold; font-size: 0.9em;">
-                            Craque: {correct}
-                        </span>
-                    </div>
-                    
-                    <div style="background-color: rgba(255, 215, 0, 0.1); padding: 12px; border-radius: 10px; border: 1px solid #FFD700;">
-                        <small><b style="color:#FFD700;">⚽ Dica do Prof:</b> {q['justificativa']}</small>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+                st.markdown(f"""<div class="q-card" style="border-left: 10px solid {color}">
+                    <strong style="color:#FFFFFF;">{q['area']} | Pergunta {i+1}</strong><br>{q['pergunta']}<br><br>
+                    Tua jogada: <span style="color:{color}; font-weight:bold;">{user_ans}</span> | 
+                    Jogada de Craque: <span style="color:#39FF14; font-weight:bold;">{correct}</span><br>
+                    <small><b style="color:#FFD700;">⚽ Dica do Prof:</b> {q['justificativa']}</small>
+                </div>""", unsafe_allow_html=True)
             
             if st.button("Voltar para o Vestiário 🏠"):
                 st.session_state.desafio_atual_id = None
@@ -400,6 +377,6 @@ elif menu == "🏆 Sala de Troféus":
             for i, q in enumerate(questoes):
                 st.markdown(f"""<div class="q-card">
                     <strong style="color:#FFFFFF;">{q['area']} | Questão {i+1}</strong><br>{q['pergunta']}<br><br>
-                    <span style="background-color: #39FF14; color: #000; padding: 5px 10px; border-radius: 8px; font-weight: bold;">Resposta de Craque: {q['correta']}</span><br><br>
+                    <span style="color:#39FF14"><b>Resposta de Craque: {q['correta']}</b></span><br>
                     <small><b style="color:#FFD700;">✅ Dica:</b> {q['justificativa']}</small>
                 </div>""", unsafe_allow_html=True)
