@@ -99,7 +99,7 @@ def ai_generate_football_quiz(categoria, posicao, tema, qtd):
     return res.get("questoes", [])
 
 # ==============================================================================
-# 4. SISTEMA VISUAL "FOCUS ARENA" (Harmonizado)
+# 4. SISTEMA VISUAL "CYBER FIELD" (Sincronizado com Campo Escuro)
 # ==============================================================================
 
 def get_video_base64(video_path):
@@ -131,30 +131,27 @@ style_css = """
         background-color: transparent !important;
     }
     
-    /* CAIXA PRINCIPAL: 75% de transparência (Sua solicitação) */
+    /* PAINEL PRINCIPAL: 75% de Transparência’ com Vidro Fumê */
     .main .block-container {
-        background-color: rgba(0, 0, 0, 0.75) !important; 
-        backdrop-filter: blur(15px); 
-        border-radius: 30px;
+        background-color: rgba(15, 15, 15, 0.75) !important; 
+        backdrop-filter: blur(20px); 
+        border-radius: 35px;
         padding: 35px;
         margin-top: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         color: #FFFFFF !important;
     }
 
-    /* MENU LATERAL: Azul Escuro Sólido para estabilidade visual */
+    /* MENU LATERAL: Azul Noturno Profundo */
     [data-testid="stSidebar"] { 
-        background-color: #001A33 !important; 
+        background-color: #000D1A !important; 
         border-right: 6px solid #FFD700; 
     }
     
-    [data-testid="stSidebar"] .stMarkdown, 
-    [data-testid="stSidebar"] label, 
-    [data-testid="stSidebar"] .stText,
-    [data-testid="stSidebar"] span,
-    [data-testid="stSidebar"] p {
+    [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label, 
+    [data-testid="stSidebar"] .stText, [data-testid="stSidebar"] span, [data-testid="stSidebar"] p {
         color: #FFFFFF !important;
         font-weight: bold !important;
     }
@@ -163,19 +160,32 @@ style_css = """
         color: #FFFFFF !important;
     }
 
-    /* ZONA DE FOCO: Questões com fundo SÓLIDO para não perder atenção */
+    /* ZONA DE FOCO: Questões com Fundo Sólido Profundo */
     .q-card { 
-        background-color: #0A0A0A !important; /* Preto quase absoluto */
+        background-color: #050505 !important; 
         padding: 30px; 
         border-radius: 25px; 
-        border: 3px solid #00D1FF; /* Borda Azul Neon para destacar */
+        border: 2px solid #00D1FF; /* Borda Neon Blue */
         margin-bottom: 30px; 
         color: #FFFFFF !important; 
-        box-shadow: 0 10px 30px rgba(0, 209, 255, 0.2); 
-        font-family: 'Arial', sans-serif; /* Letras mais limpas para leitura rápida */
+        box-shadow: 0 10px 30px rgba(0, 209, 255, 0.15); 
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
     }
 
-    /* BOTÕES: Azul Neon */
+    /* CORREÇÃO DE LEITURA: Opções do Quiz */
+    div[role="radiogroup"] label {
+        color: #FFFFFF !important;
+        font-size: 1.1em !important;
+        font-weight: 500 !important;
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        padding: 12px 18px !important;
+        border-radius: 12px !important;
+        margin-bottom: 8px !important;
+        display: block !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    /* BOTÕES: Azul Neon Glow */
     .stButton>button { 
         background-color: #00D1FF !important; 
         color: #000000 !important; 
@@ -186,25 +196,26 @@ style_css = """
         padding: 10px 30px !important;
         transition: 0.3s; 
         text-transform: uppercase;
-        box-shadow: 0 0 15px #00D1FF;
+        box-shadow: 0 0 20px rgba(0, 209, 255, 0.6);
     }
     
     .stButton>button:hover { 
         background-color: #FFFFFF !important; 
         color: #00D1FF !important; 
         transform: scale(1.05); 
-        box-shadow: 0 0 25px #FFFFFF;
+        box-shadow: 0 0 30px #FFFFFF;
     }
 
     h1, h2, h3 { 
         color: #FFFFFF !important; 
         font-weight: 900 !important;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
     }
 
+    /* Inputs Harmonizados */
     .stTextInput>div>div>input, .stSelectbox>div>div>div { 
         border-radius: 15px !important; 
-        border: 2px solid rgba(255, 255, 255, 0.5) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
         background-color: rgba(0, 0, 0, 0.6) !important;
         color: #FFFFFF !important;
     }
@@ -225,6 +236,7 @@ init_db()
 st.set_page_config(page_title="Base Craque AI ⚽", layout="wide", page_icon="⚽")
 st.markdown(style_css + video_html, unsafe_allow_html=True)
 
+st.sidebarC_title = "⚽ Base Craque AI"
 st.sidebar.title("⚽ Base Craque AI")
 st.sidebar.markdown("### MENU DO JOGO")
 menu = st.sidebar.radio("Escolha sua fase:", ["🏠 Vestiário", "🎮 Jogar Desafio", "🏆 Sala de Troféus"])
@@ -235,12 +247,12 @@ if menu == "🏠 Vestiário":
     col1, col2 = st.columns([2, 1])
     with col1:
         st.markdown("""
-        <div style="background-color: rgba(255,255,255,0.1); padding: 35px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.3); color: #FFFFFF; box-shadow: 0 10px 20px rgba(0,0,0,0.4);">
+        <div style="background-color: rgba(255,255,255,0.08); padding: 35px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); color: #FFFFFF; box-shadow: 0 10px 20px rgba(0,0,0,0.4);">
             <h2 style="margin-top:0; color:#FFD700; border-bottom: 3px solid #FFD700; display: inline-block;">Bora subir de nível? 🚀⚽</h2>
             <p style="font-size: 1.4em; line-height: 1.6; color: #FFFFFF;">Aqui você treina a <b style="color:#FFD700; font-size: 1.5em;">MENTE</b> para se tornar o melhor do campo! 
             Aprenda as manhas da tática, as dicas de saúde e as regras para não levar cartão!</p>
             <br>
-            <div style="font-size: 1.2em; background-color: rgba(0,0,0,0.5); padding: 20px; border-radius: 20px; border: 1px solid #FFD700;">
+            <div style="font-size: 1.2em; background-color: rgba(0,0,0,0.6); padding: 20px; border-radius: 20px; border: 1px solid #FFD700;">
                 🎯 <b style="color:#FFD700;">QI DE JOGO:</b> Teste sua visão de craque.<br>
                 🍎 <b style="color:#FFD700;">COMIDA de CAMPEÃO:</b> Nutrição para ter energia.<br>
                 📜 <b style="color:#FFD700;">REGRA DA BOLA:</b> Para dominar o juiz!<br>
@@ -251,7 +263,7 @@ if menu == "🏠 Vestiário":
         st.markdown("<br>", unsafe_allow_html=True)
         
         st.markdown(f"""
-            <div style="background-color: rgba(57, 255, 20, 0.2); border-left: 8px solid #39FF14; padding: 15px; border-radius: 10px; color: #39FF14; font-weight: bold; box-shadow: 0 0 10px #39FF14;">
+            <div style="background-color: rgba(57, 255, 20, 0.1); border-left: 8px solid #39FF14; padding: 15px; border-radius: 10px; color: #39FF14; font-weight: bold; box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);">
                 💡 Dica do Prof: 'Quem estuda o jogo, joga com a bola no pé!' ⚽
             </div>
         """, unsafe_allow_html=True)
@@ -345,12 +357,26 @@ elif menu == "🎮 Jogar Desafio":
                 user_ans = st.session_state.respostas_usuario.get(i, "N/A")
                 correct = q['correta']
                 color = "#39FF14" if user_ans == correct else "#FF3131"
-                st.markdown(f"""<div class="q-card" style="border-left: 10px solid {color}">
-                    <strong style="color:#FFFFFF;">{q['area']} | Pergunta {i+1}</strong><br>{q['pergunta']}<br><br>
-                    Tua jogada: <span style="color:{color}; font-weight:bold;">{user_ans}</span> | 
-                    Jogada de Craque: <span style="color:#39FF14; font-weight:bold;">{correct}</span><br>
-                    <small><b style="color:#FFD700;">⚽ Dica do Prof:</b> {q['justificativa']}</small>
-                </div>""", unsafe_allow_html=True)
+                
+                st.markdown(f"""
+                <div class="q-card" style="border-left: 10px solid {color}">
+                    <strong style="color:#FFFFFF;">{q['area']} | Pergunta {i+1}</strong><br>
+                    <span style="font-size:1.1em; color: #CCC; display:block; margin-bottom:15px;">{q['pergunta']}</span>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <span style="background-color: {color}; color: #000; padding: 5px 12px; border-radius: 8px; font-weight: bold; font-size: 0.9em;">
+                            Tua jogada: {user_ans}
+                        </span>
+                        <span style="background-color: #39FF14; color: #000; padding: 5px 12px; border-radius: 8px; font-weight: bold; font-size: 0.9em;">
+                            Craque: {correct}
+                        </span>
+                    </div>
+                    
+                    <div style="background-color: rgba(255, 215, 0, 0.1); padding: 12px; border-radius: 10px; border: 1px solid #FFD700;">
+                        <small><b style="color:#FFD700;">⚽ Dica do Prof:</b> {q['justificativa']}</small>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
             
             if st.button("Voltar para o Vestiário 🏠"):
                 st.session_state.desafio_atual_id = None
@@ -362,7 +388,7 @@ elif menu == "🏆 Sala de Troféus":
     df = get_desafios()
     if df.empty:
         st.markdown(f"""
-            <div style="background-color: rgba(0, 0, 0, 0.5); border: 2px solid #00D1FF; border-radius: 25px; padding: 40px; text-align: center; color: #FFFFFF; box-shadow: 0 0 20px rgba(0, 209, 255, 0.2);">
+            <div style="background-color: rgba(0, 0, 0, 0.6); border: 2px solid #00D1FF; border-radius: 25px; padding: 40px; text-align: center; color: #FFFFFF; box-shadow: 0 0 20px rgba(0, 209, 255, 0.2);">
                 <h2 style="color: #FFFFFF;">🏟️ Campo Vazio!</h2>
                 <p style="font-size: 1.2em;">Você ainda não registrou nenhuma jogada.<br>
                 <b style="color: #FFD700;">Bora pro campo e conquiste seus troféus! ⚽</b></p>
@@ -377,6 +403,6 @@ elif menu == "🏆 Sala de Troféus":
             for i, q in enumerate(questoes):
                 st.markdown(f"""<div class="q-card">
                     <strong style="color:#FFFFFF;">{q['area']} | Questão {i+1}</strong><br>{q['pergunta']}<br><br>
-                    <span style="color:#39FF14"><b>Resposta de Craque: {q['correta']}</b></span><br>
+                    <span style="background-color: #39FF14; color: #000; padding: 5px 10px; border-radius: 8px; font-weight: bold;">Resposta de Craque: {q['correta']}</span><br><br>
                     <small><b style="color:#FFD700;">✅ Dica:</b> {q['justificativa']}</small>
                 </div>""", unsafe_allow_html=True)
