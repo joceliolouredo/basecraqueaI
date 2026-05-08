@@ -99,7 +99,7 @@ def ai_generate_football_quiz(categoria, posicao, tema, qtd):
     return res.get("questoes", [])
 
 # ==============================================================================
-# 4. SISTEMA VISUAL GAMER (VÍDEO E ESTILO)
+# 4. SISTEMA VISUAL GAMER - TEMA CLARO (LIGHT MODE)
 # ==============================================================================
 
 def get_video_base64(video_path):
@@ -108,13 +108,11 @@ def get_video_base64(video_path):
             encoded_string = base64.b64encode(video_file.read()).decode('utf-8')
         return f"data:video/mp4;base64,{encoded_string}"
     except Exception:
-        # Link de backup caso o arquivo arena.mp4 não esteja no repo
         return "https://videos.pexels.com/video-files/16651367/pexels-video-16651367.mp4"
 
-# Preparação do Visual
 VIDEO_B64 = get_video_base64("arena.mp4")
 
-# CSS Separado para evitar NameError com f-strings
+# CSS TEMA CLARO
 style_css = """
     <style>
     .video-background {
@@ -134,66 +132,72 @@ style_css = """
         background-color: transparent !important;
     }
     
+    /* Painel Principal: Branco Translúcido */
     .main .block-container {
-        background-color: rgba(0, 0, 0, 0.75) !important; 
+        background-color: rgba(255, 255, 255, 0.88) !important; 
         backdrop-filter: blur(12px); 
         border-radius: 30px;
         padding: 30px;
         margin-top: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: white !important;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        color: #1B5E20 !important;
     }
 
+    /* Sidebar: Branco Translúcido */
     [data-testid="stSidebar"] { 
-        background-color: rgba(0, 0, 0, 0.85) !important; 
+        background-color: rgba(255, 255, 255, 0.9) !important; 
         border-right: 6px solid #FFD700; 
     }
     
     [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] label, [data-testid="stSidebar"] .stText {
-        color: #FFFFFF !important;
+        color: #1B5E20 !important;
     }
 
+    /* Cartões de Questões */
     .q-card { 
-        background-color: rgba(255, 255, 255, 0.98); 
+        background-color: #FFFFFF; 
         padding: 25px; 
         border-radius: 25px; 
         border: 4px solid #FFD700; 
         margin-bottom: 25px; 
-        color: #1B5E20; 
+        color: #333; 
         box-shadow: 8px 8px 0px #C8E6C9; 
         font-family: 'Comic Sans MS', cursive, sans-serif;
     }
 
+    /* Botões Dourados */
     .stButton>button { 
         background-color: #FFD700 !important; 
-        color: #000 !important; 
+        color: #1B5E20 !important; 
         font-weight: 900 !important; 
         font-size: 18px !important;
         border-radius: 50px !important; 
-        border: 3px solid #FFFFFF !important; 
+        border: 3px solid #1B5E20 !important; 
         padding: 10px 20px !important;
         transition: 0.3s; 
         text-transform: uppercase;
-        box-shadow: 0 0 15px #FFD700;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
     
     .stButton>button:hover { 
         background-color: #FFFFFF !important; 
-        transform: scale(1.1); 
-        box-shadow: 0 0 25px #FFFFFF;
+        transform: scale(1.05); 
+        box-shadow: 0 0 15px #FFD700;
     }
 
+    /* Títulos em Verde com sombra Dourada */
     h1, h2, h3 { 
-        color: #FFD700 !important; 
+        color: #1B5E20 !important; 
         font-family: 'Comic Sans MS', cursive, sans-serif !important; 
-        text-shadow: 2px 2px #000;
+        text-shadow: 1px 1px #FFD700;
     }
 
+    /* Inputs */
     .stTextInput>div>div>input, .stSelectbox>div>div>div { 
         border-radius: 20px !important; 
-        border: 2px solid #FFD700 !important;
+        border: 2px solid #C8E6C9 !important;
         background-color: white !important;
         color: black !important;
     }
@@ -222,24 +226,24 @@ if menu == "🏠 Vestiário":
     st.title("🏟️ Bem-vindo ao Vestiário, Craque!")
     col1, col2 = st.columns([2, 1])
     with col1:
+        # Ajustado para cores claras
         st.markdown("""
-        <div style="background-color: rgba(255,255,255,0.1); padding: 30px; border-radius: 30px; border: 4px solid #FFD700; color: white;">
-            <h2 style="margin-top:0; color:#FFD700;">Bora subir de nível? 🚀⚽</h2>
-            <p style="font-size: 1.2em;">Aqui você treina a <b>mente</b> para se tornar o melhor do campo! 
+        <div style="background-color: rgba(255,255,255,0.5); padding: 30px; border-radius: 30px; border: 4px solid #FFD700; color: #1B5E20;">
+            <h2 style="margin-top:0; color:#1B5E20;">Bora subir de nível? 🚀⚽</h2>
+            <p style="font-size: 1.2em;">Aqui você treina a <b style="color:#1B5E20;">mente</b> para se tornar o melhor do campo! 
             Aprenda as manhas da tática, as dicas de saúde e as regras para não levar cartão!</p>
             <br>
             <div style="font-size: 1.1em;">
-                🎯 <b style="color:#FFD700;">QI DE JOGO:</b> Teste sua visão de craque.<br>
-                🍎 <b style="color:#FFD700;">COMIDA DE CAMPEÃO:</b> Nutrição para ter energia.<br>
-                📜 <b style="color:#FFD700;">REGRA DA BOLA:</b> Para dominar o juiz!<br>
-                🛡️ <b style="color:#FFD700;">MENTALIDADE:</b> Foco total no gol!
+                🎯 <b style="color:#1B5E20;">QI DE JOGO:</b> Teste sua visão de craque.<br>
+                🍎 <b style="color:#1B5E20;">COMIDA DE CAMPEÃO:</b> Nutrição para ter energia.<br>
+                📜 <b style="color:#1B5E20;">REGRA DA BOLA:</b> Para dominar o juiz!<br>
+                🛡️ <b style="color:#1B5E20;">MENTALIDADE:</b> Foco total no gol!
             </div>
         </div>
         """, unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
         st.success("💡 **Dica do Prof:** 'Quem estuda o jogo, joga com a bola no pé!' ⚽")
     with col2:
-        # Substitua pelo caminho da sua imagem de jogador se tiver, ou remova
         try:
             st.image("jogador.jpg.png", use_container_width=True)
         except:
@@ -313,12 +317,12 @@ elif menu == "🎮 Jogar Desafio":
 
             col_a, col_b = st.columns(2)
             with col_a: st.metric("Aproveitamento", f"{score_percent:.1f}%")
-            with col_b: st.markdown(f"**Seu Nível:** <span style='font-size:20px; color:#FFD700;'>{nivel}</span>", unsafe_allow_html=True)
+            with col_b: st.markdown(f"**Seu Nível:** <span style='font-size:20px; color:#1B5E20;'>{nivel}</span>", unsafe_allow_html=True)
 
             if len(stats) > 0:
                 df_stats = pd.DataFrame([{"Área": k, "Perc": (v["corretas"]/v["total"])*100} for k, v in stats.items()])
                 fig = go.Figure(data=go.Bar(x=df_stats['Área'], y=df_stats['Perc'], marker_color='#FFD700', text=df_stats['Perc'].apply(lambda x: f"{x:.0f}%"), textposition='auto'))
-                fig.update_layout(title="Tua Evolução no Campo!", yaxis_range=[0, 100], template="plotly_dark")
+                fig.update_layout(title="Tua Evolução no Campo!", yaxis_range=[0, 100], template="plotly_white") # Mudado para plotly_white
                 st.plotly_chart(fig, use_container_width=True)
 
             st.divider()
